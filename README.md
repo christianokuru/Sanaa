@@ -2,78 +2,93 @@
 
 **Learn the craft. Earn from it.**
 
-An online course marketplace for African hands-on skills: fashion and sewing, hair and beauty, dance and music. Teachers upload video courses and keep 80% of each sale. Sanaa keeps 20%.
+A mobile-first PWA marketplace where African teachers sell video courses in fashion, hair, beauty, dance, music and crafts. Teachers keep 80% of each sale and Sanaa keeps 20%. Prices show in each visitor's own currency.
 
-## What's included
+> **Status:** the frontend is complete. Data is saved on the device, so every flow works end to end without a backend. Connect Supabase, Flutterwave and Bunny Stream next (see "Connecting the backend" below).
 
-- **Mobile-first design** with an African look (kente stripes, mud cloth patterns) and a bottom menu on phones
-- **Country indicator** in the header. It detects the visitor's country and shows every price in their currency. Visitors can change their country.
-- **Payments with Flutterwave**: mobile money, card and bank transfer. Learners pay in their own currency where Flutterwave supports it, otherwise in USD.
-- **80/20 split**: every sale records the teacher's 80% and your 20%
-- **Teacher payouts** to mobile money or bank through Flutterwave Transfers, sent from the admin page
-- **Video hosting with Bunny Stream**: resumable uploads from a phone, adaptive streaming, optional signed links
-- **Data saver mode** that caps video at 360p
-- **Moving watermark** with the student's email, to discourage piracy
-- **Free preview lessons**, reviews and ratings, progress tracking
-- **Certificates** that anyone can check by link
-- **Admin area**: approve or reject courses, pay teachers, see sales and your earnings
-- **Filming guide** for teachers
-- **Installable on phones** (web app manifest)
-
-Without any keys set, the site runs in **demo mode** with sample courses.
-
-## Run it locally
+## Run it
 
 ```bash
 npm install
-cp .env.example .env.local
 npm run dev
 ```
 
 Open http://localhost:3000.
 
-## Set up the services
+### Demo accounts
 
-### 1. Supabase (database, logins, cover photos)
+All three use the password `Sanaa2026`. The login page also has one-tap buttons for them.
 
-1. Create a project at supabase.com.
-2. Go to **SQL Editor**, paste all of `supabase/schema.sql` and run it.
-3. Under **Project Settings > API**, copy the URL, the anon key and the service role key into `.env.local`.
-4. Under **Authentication > URL Configuration**, set the Site URL to your domain and add `https://YOUR-DOMAIN/auth/callback` as a redirect URL.
-5. Sign up on your site, then make yourself admin. In the SQL Editor, run:
+| Role    | Email                  |
+| ------- | ---------------------- |
+| Learner | learner@sanaa.africa   |
+| Teacher | teacher@sanaa.africa   |
+| Admin   | admin@sanaa.africa     |
 
-```sql
-update public.profiles set role = 'admin'
-where id = (select id from auth.users where email = 'you@example.com');
+Remove the demo accounts (`DEMO_ACCOUNTS` in `src/lib/services/auth.ts`) before launch.
+
+## What's inside
+
+**Learners:** search, filters and sorting; category and teacher pages; course pages with free previews; wishlist; checkout by mobile money, card or bank transfer (test mode); video player with a data saver and a moving watermark; progress tracking; certificates; reviews; account settings; delete account.
+
+**Teachers:** an earnings calculator; dashboard with earnings, a chart and recent sales; course editor with lessons, video upload, reorder and free previews; send for review; payout details for mobile money or bank.
+
+**Admin:** overview of sales and your 20% revenue; approve or reject courses; send teacher payouts; sales table.
+
+**Platform:** prices in all 54 African currencies plus the main diaspora currencies; installable PWA with offline page; SEO (metadata, sitemap, robots, JSON-LD, share images).
+
+## Design
+
+- Clean white canvas, near-black type, one action color: **ember** `#D93A16`.
+- Bold course art inspired by Ndebele painting, kente, mud cloth and adire is generated per course (`src/components/brand/CourseArt.tsx`). It needs no image downloads. When a course has a real photo (`coverUrl`), the photo is shown instead.
+- Fonts: DM Sans, with Instrument Serif italic for accents.
+- Tokens live in `tailwind.config.ts`.
+
+## Code structure
+
+```
+src/
+  app/                 routes (pages are thin: they load data and render components)
+  components/
+    ui/                design system: Button, Field, Sheet, Badge, Scroller, Toaster…
+    layout/            header, category bar, mobile tab bar, footer
+    brand/             logo, category icons, cover art
+    course/ search/ learn/ checkout/ library/ account/ teach/ admin/ …  feature components
+  config/              site, categories, payment providers
+  lib/
+    catalog/           course data and the read API (repository.ts)
+    locale/            countries, currency conversion, visitor locale
+    services/          all business actions: auth, checkout, library, teaching, admin, earnings
+    store/             device storage, validated against a schema on every load
+    validation/        zod schemas for every form
+    security/          CSP, password hashing, safe redirects
+    seo/               JSON-LD and share images
 ```
 
-### 2. Flutterwave (payments and payouts)
+Components never change data directly: they call `lib/services/*`. Connecting the backend means changing those services and `lib/catalog/repository.ts`, not the UI.
 
-1. In the Flutterwave dashboard, copy your **secret key** into `FLW_SECRET_KEY`. Use test keys first.
-2. Under **Settings > Webhooks**, set the URL to `https://YOUR-DOMAIN/api/webhooks/flutterwave`. Choose a secret hash and put the same value in `FLW_WEBHOOK_HASH`.
-3. Payouts need a funded Flutterwave balance in the teacher's currency. Check the mobile money network codes in `lib/payout-options.ts` against the Flutterwave transfer docs before going live.
+## Security
 
-### 3. Bunny Stream (videos)
+- **Content Security Policy** with a per-request nonce: scripts only run from this site. Also HSTS, `X-Frame-Options: DENY`, `nosniff`, a strict referrer policy and a permissions policy (`src/middleware.ts`, `next.config.mjs`).
+- **Validation:** every form and URL parameter is validated with zod. Control characters are stripped and lengths are capped.
+- **Passwords:** hashed with PBKDF2 (210k iterations), compared in constant time. Five wrong attempts lock the account for 5 minutes. Login errors never reveal whether an email exists.
+- **Redirects:** `?next=` only accepts same-site paths, which blocks open redirects.
+- **Saved data** is validated on load, so tampered storage is discarded.
+- **Card details** are validated in memory only and never stored.
+- **Structured data** is escaped so it can't break out of its script tag.
 
-1. Create a Stream library at bunny.net.
-2. Copy the library ID, API key and CDN hostname into `.env.local`.
-3. Optional, but recommended: turn on **CDN token authentication** in the library's security settings and copy the key into `BUNNY_STREAM_TOKEN_KEY`. Video links then expire after a few hours. Test playback after you turn this on.
+> Device-side auth protects the demo, but **real security must come from the server**. When Supabase is connected, use its Auth and the row-level security policies in `legacy/supabase/schema.sql`.
 
-### 4. Deploy
+## Connecting the backend (next step)
 
-Deploy to **Vercel** (recommended). Vercel tells the site each visitor's country, which the country indicator needs. Add every variable from `.env.example` in the Vercel project settings and set `NEXT_PUBLIC_SITE_URL` to your live domain.
+1. **Supabase:** run `legacy/supabase/schema.sql`. Then swap `lib/services/auth.ts` for Supabase Auth, `lib/catalog/repository.ts` for queries, and the other services for API calls or server actions.
+2. **Flutterwave:** replace `payForCourse` in `lib/services/checkout.ts` with a server action that creates the payment link, plus a webhook that verifies the transaction before enrolling. The previous version of this code in git history has a working example.
+3. **Bunny Stream:** pass each lesson's HLS URL to `VideoPlayer` and set `NEXT_PUBLIC_VIDEO_CDN_HOST` so the CSP allows it.
+4. **Hosting:** deploy on Vercel. It sends each visitor's country, which drives the currency.
 
-## How money flows
+## Scripts
 
-1. A learner pays, for example ₦15,000, through Flutterwave.
-2. The payment is checked with Flutterwave's servers, never trusted from the browser.
-3. The sale is stored in US dollars at that day's rate: 80% to the teacher's balance, 20% to Sanaa.
-4. From **Admin > Teacher payouts**, you send each teacher their balance in their own currency.
-
-## Project layout
-
-- `app/`: pages (home, browse, course, learn, teach, admin, account)
-- `components/`: buttons, cards, player, forms
-- `lib/`: currency, country, payments, video and database helpers
-- `lib/actions/`: server actions (checkout, teacher, admin, auth)
-- `supabase/schema.sql`: tables, security rules and storage
+- `npm run build`: production build
+- `npm run lint`: lint
+- `npm run typecheck`: type check
+- `npm run icons`: regenerate PWA icons from `public/icons/icon.svg` (needs Playwright)

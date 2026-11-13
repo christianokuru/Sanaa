@@ -9,6 +9,7 @@ import { StoreHydrator } from "@/components/layout/StoreHydrator";
 import { LocaleProvider } from "@/components/locale/LocaleProvider";
 import { Toaster } from "@/components/ui/Toaster";
 import { ServiceWorker } from "@/components/pwa/ServiceWorker";
+import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getRates, getViewerLocale } from "@/lib/locale/locale.server";
 import { pickRates } from "@/lib/locale/currency";
@@ -67,6 +68,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </LocaleProvider>
         <StoreHydrator />
         <ServiceWorker />
+        <SmoothScroll />
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
       </body>
     </html>

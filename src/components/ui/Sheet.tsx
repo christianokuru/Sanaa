@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { IconButton } from "@/components/ui/IconButton";
+import { getLenis } from "@/lib/scroll/lenis";
 
 type Props = {
   open: boolean;
@@ -34,6 +35,7 @@ export function Sheet({ open, onClose, title, description, children, footer, var
     const previous = document.activeElement as HTMLElement | null;
     const { overflow } = document.body.style;
     document.body.style.overflow = "hidden";
+    getLenis()?.stop();
     const focusables = () =>
       Array.from(panel.current?.querySelectorAll<HTMLElement>('a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])') ?? []);
     const t = setTimeout(() => (panel.current?.querySelector<HTMLElement>("[data-autofocus]") ?? focusables()[1] ?? panel.current)?.focus(), 30);
@@ -59,6 +61,7 @@ export function Sheet({ open, onClose, title, description, children, footer, var
       clearTimeout(t);
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = overflow;
+      getLenis()?.start();
       previous?.focus?.();
     };
   }, [open]);
@@ -66,7 +69,7 @@ export function Sheet({ open, onClose, title, description, children, footer, var
   if (!mounted || !open) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[60] flex items-end justify-center md:items-center md:p-6">
+    <div data-lenis-prevent className="fixed inset-0 z-[60] flex items-end justify-center md:items-center md:p-6">
       <div className="absolute inset-0 animate-fade-in bg-black/50" onClick={() => onCloseRef.current()} aria-hidden />
       <div
         ref={panel}

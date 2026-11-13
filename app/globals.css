@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: #fbf5ea;
+  color: #2b1b12;
+}
+
+/* Kente-inspired stripe band */
+.kente {
+  background-image:
+    repeating-linear-gradient(90deg,
+      #e2a529 0 18px, #1f5e3b 18px 24px, #c2502a 24px 42px,
+      #2b1b12 42px 46px, #e2a529 46px 52px, #1f5e3b 52px 70px, #2b1b12 70px 74px);
+}
+
+/* Mud cloth-inspired dotted pattern */
+.mudcloth {
+  background-color: #2b1b12;
+  background-image:
+    radial-gradient(circle at 25% 25%, rgba(251, 245, 234, .22) 2px, transparent 2.5px),
+    radial-gradient(circle at 75% 75%, rgba(251, 245, 234, .22) 2px, transparent 2.5px),
+    linear-gradient(45deg, transparent 46%, rgba(251, 245, 234, .12) 47% 53%, transparent 54%);
+  background-size: 28px 28px, 28px 28px, 28px 28px;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-6 font-semibold transition active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-primary {
+    @apply btn bg-terracotta text-white hover:bg-terracotta-dark;
+  }
+  .btn-dark {
+    @apply btn bg-earth text-cream hover:bg-earth-soft;
+  }
+  .btn-outline {
+    @apply btn border-2 border-earth/15 bg-white text-earth hover:border-earth/40;
+  }
+  .input {
+    @apply block min-h-[48px] w-full rounded-xl border border-earth/15 bg-white px-4 py-3 text-base text-earth placeholder:text-earth/40 focus:border-terracotta focus:outline-none focus:ring-2 focus:ring-terracotta/20;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-semibold text-earth;
+  }
+  .card {
+    @apply rounded-2xl bg-white shadow-card;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold;
+  }
+}
+
+/* Room for the mobile bottom menu and the iPhone home bar */
+.pb-safe {
+  padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+}
+@media (min-width: 768px) {
+  .pb-safe {
+    padding-bottom: 2rem;
+  }
+}

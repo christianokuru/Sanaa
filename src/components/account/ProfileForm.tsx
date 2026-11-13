@@ -8,8 +8,9 @@ import { updateProfile } from "@/lib/services/auth";
 import { toast } from "@/lib/services/toast";
 import type { PublicUser } from "@/lib/store/schema";
 
-export function ProfileForm({ user }: { user: PublicUser }) {
-  const [form, setForm] = useState({ name: user.name, country: user.country, bio: user.bio });
+/** `bioFallback` pre-fills "About you" with the bio already shown on the teacher's public page. */
+export function ProfileForm({ user, bioFallback }: { user: PublicUser; bioFallback?: string }) {
+  const [form, setForm] = useState({ name: user.name, country: user.country, bio: user.bio || bioFallback || "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   function submit(e: React.FormEvent) {

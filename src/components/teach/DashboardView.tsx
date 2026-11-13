@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AlertCircle, ChevronRight, Plus } from "lucide-react";
+import { AlertCircle, ChevronRight, Plus, UserRound } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -38,7 +38,12 @@ export function DashboardView() {
       <PageHeader
         title={`Hello, ${user.name.split(" ")[0]}`}
         subtitle="Here's how your teaching is doing."
-        action={<Button href="/teach/courses/new"><Plus className="h-4 w-4" /> New course</Button>}
+        action={
+          <div className="flex flex-wrap gap-3">
+            <Button href="/teach/profile" variant="outline"><UserRound className="h-4 w-4" /> Edit profile</Button>
+            <Button href="/teach/courses/new"><Plus className="h-4 w-4" /> New course</Button>
+          </div>
+        }
       />
 
       {!payoutAccount && (

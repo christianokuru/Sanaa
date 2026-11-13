@@ -54,6 +54,15 @@ export function getReviews(courseId: string): Review[] {
   return REVIEWS.filter((r) => r.courseId === courseId).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
+/** Newest learner reviews across all of a teacher's courses. */
+export function getTeacherReviews(teacherId: string, limit = 6): Array<Review & { courseTitle: string; courseSlug: string }> {
+  const courses = new Map(getCoursesByTeacher(teacherId).map((c) => [c.id, c]));
+  return REVIEWS.filter((r) => courses.has(r.courseId))
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, limit)
+    .map((r) => ({ ...r, courseTitle: courses.get(r.courseId)!.title, courseSlug: courses.get(r.courseId)!.slug }));
+}
+
 export function getTeachers(): Teacher[] {
   return TEACHERS;
 }

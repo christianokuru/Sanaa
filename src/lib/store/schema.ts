@@ -85,6 +85,30 @@ export const payoutSchema = z.object({
   createdAt: iso,
 });
 
+/** Teacher-uploaded photo: a small re-encoded image, never the original file. */
+export const PHOTO_DATA_URL = /^data:image\/(webp|jpeg|png);base64,[A-Za-z0-9+/]+={0,2}$/;
+export const SOCIAL_PLATFORMS = ["instagram", "tiktok", "youtube", "facebook", "x"] as const;
+export type SocialPlatform = (typeof SOCIAL_PLATFORMS)[number];
+
+export const testimonialSchema = z.object({
+  id,
+  author: z.string().max(80),
+  context: z.string().max(80),
+  body: z.string().max(400),
+  createdAt: iso,
+});
+
+const handle = z.string().max(60).optional();
+
+export const teacherProfileSchema = z.object({
+  photo: z.string().max(300_000).regex(PHOTO_DATA_URL).optional(),
+  socials: z
+    .object({ instagram: handle, tiktok: handle, youtube: handle, facebook: handle, x: handle })
+    .default({}),
+  testimonials: z.array(testimonialSchema).max(6).default([]),
+  updatedAt: iso,
+});
+
 export const persistedStateSchema = z.object({
   users: z.array(userSchema).max(500),
   sessionUserId: id.nullable(),
@@ -96,6 +120,8 @@ export const persistedStateSchema = z.object({
   payoutAccounts: z.record(payoutAccountSchema),
   payouts: z.array(payoutSchema).max(2000),
   courseDecisions: z.record(z.object({ status: z.enum(["published", "rejected"]), reason: z.string().max(500).optional() })),
+  // Older saved data has no profiles yet: default instead of discarding everything.
+  teacherProfiles: z.record(teacherProfileSchema).default({}),
   prefs: z.object({ dataSaver: z.boolean(), recentSearches: z.array(z.string().max(80)).max(8) }),
   loginGuard: z.record(z.object({ failures: z.number().int().nonnegative(), lockedUntil: z.number().nonnegative() })),
 });
@@ -106,6 +132,8 @@ export type UserReview = z.infer<typeof userReviewSchema>;
 export type DraftCourse = z.infer<typeof draftCourseSchema>;
 export type PayoutAccount = z.infer<typeof payoutAccountSchema>;
 export type Payout = z.infer<typeof payoutSchema>;
+export type Testimonial = z.infer<typeof testimonialSchema>;
+export type TeacherProfile = z.infer<typeof teacherProfileSchema>;
 export type PersistedState = z.infer<typeof persistedStateSchema>;
 export type PublicUser = Omit<User, "passwordHash" | "salt">;
 
@@ -122,6 +150,7 @@ export const initialState: PersistedState = {
   payoutAccounts: {},
   payouts: [],
   courseDecisions: {},
+  teacherProfiles: {},
   prefs: { dataSaver: false, recentSearches: [] },
   loginGuard: {},
 };

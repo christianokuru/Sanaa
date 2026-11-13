@@ -41,3 +41,13 @@ export function useCompletedLessons(): Set<string> {
 export function usePrefs() {
   return useAppStore((s) => s.prefs);
 }
+
+/** A teacher's uploaded photo, socials and client reviews (by catalog teacher id). */
+export function useTeacherProfile(teacherId: string) {
+  return useAppStore((s) => (s.hydrated ? s.teacherProfiles[teacherId] : undefined));
+}
+
+/** The bio the teacher wrote in their account, if any. */
+export function useTeacherBio(teacherId: string): string | undefined {
+  return useAppStore((s) => (s.hydrated ? s.users.find((u) => u.teacherId === teacherId)?.bio || undefined : undefined));
+}

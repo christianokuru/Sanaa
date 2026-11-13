@@ -132,3 +132,49 @@ function notExpired(mmYY: string): boolean {
   const end = new Date(2000 + yy!, mm!, 1);
   return end.getTime() > Date.now();
 }
+
+// ---------- Teacher profile ----------
+
+/**
+ * Social handles are stored as bare handles and the link is built by us, so a teacher can
+ * never place an arbitrary (phishing) URL on their profile. A pasted profile link is accepted
+ * and reduced to its handle.
+ */
+const HANDLE_RULES = {
+  instagram: { host: "instagram.com", re: /^[A-Za-z0-9._]{1,30}$/ },
+  tiktok: { host: "tiktok.com", re: /^[A-Za-z0-9._]{2,24}$/ },
+  youtube: { host: "youtube.com", re: /^[A-Za-z0-9._-]{3,30}$/ },
+  facebook: { host: "facebook.com", re: /^[A-Za-z0-9.]{5,50}$/ },
+  x: { host: "x.com", re: /^[A-Za-z0-9_]{1,15}$/ },
+} as const;
+
+export function toHandle(platform: keyof typeof HANDLE_RULES, raw: string): string {
+  let v = raw.trim();
+  const hosts = platform === "x" ? ["x.com", "twitter.com"] : [HANDLE_RULES[platform].host];
+  const url = v.match(/^(?:https?:\/\/)?(?:www\.|m\.)?([a-z.]+)\/(.*)$/i);
+  if (url && hosts.includes(url[1]!.toLowerCase())) v = url[2]!.split(/[/?#]/)[0] ?? "";
+  return v.replace(/^@/, "");
+}
+
+const handle = (platform: keyof typeof HANDLE_RULES, label: string) =>
+  z
+    .string()
+    .max(200)
+    .transform((s) => toHandle(platform, s))
+    .refine((s) => s === "" || HANDLE_RULES[platform].re.test(s), `Enter your ${label} username, like @yourname`)
+    .transform((s) => s || undefined);
+
+export const socialsSchema = z.object({
+  instagram: handle("instagram", "Instagram"),
+  tiktok: handle("tiktok", "TikTok"),
+  youtube: handle("youtube", "YouTube"),
+  facebook: handle("facebook", "Facebook"),
+  x: handle("x", "X"),
+});
+
+export const testimonialInputSchema = z.object({
+  author: nameSchema,
+  context: cleanText(80),
+  body: cleanText(400).pipe(z.string().min(20, "Add a little more of what they said (20+ characters)")),
+  confirm: z.literal(true, { errorMap: () => ({ message: "Please confirm this review is real" }) }),
+});

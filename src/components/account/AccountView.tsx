@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, GraduationCap, Heart, LogOut, PlayCircle, Shield } from "lucide-react";
+import { ChevronRight, GraduationCap, Heart, LogOut, PlayCircle, Shield, UserRound } from "lucide-react";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import { Switch } from "@/components/ui/Switch";
 import { CountryButton } from "@/components/locale/CountryPicker";
 import { ProfileForm } from "@/components/account/ProfileForm";
+import { getTeacherById } from "@/lib/catalog/repository";
 import { PasswordForm } from "@/components/account/PasswordForm";
 import { DeleteAccount } from "@/components/account/DeleteAccount";
 import { useRequiredUser } from "@/components/auth/RequireAuth";
@@ -38,6 +39,7 @@ export function AccountView() {
     user.role === "student"
       ? { href: "/teach", label: "Become a teacher", text: "Teach your craft and keep 80%", icon: GraduationCap }
       : { href: "/teach/dashboard", label: "Teacher dashboard", text: "Courses, students and earnings", icon: GraduationCap },
+    ...(user.role !== "student" ? [{ href: "/teach/profile", label: "Teacher profile", text: "Photo, social media and reviews", icon: UserRound }] : []),
     ...(user.role === "admin" ? [{ href: "/admin", label: "Admin", text: "Reviews, payouts and sales", icon: Shield }] : []),
   ];
 
@@ -72,7 +74,7 @@ export function AccountView() {
 
       <div className="mt-10">
         <Panel title="Personal info" description="How you appear on Sanaa.">
-          <ProfileForm user={user} />
+          <ProfileForm user={user} bioFallback={user.teacherId ? getTeacherById(user.teacherId)?.bio : undefined} />
         </Panel>
         <Panel title="Preferences" description="Make Sanaa work for your phone and pocket.">
           <div className="space-y-6">

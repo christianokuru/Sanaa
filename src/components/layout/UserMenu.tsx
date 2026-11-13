@@ -34,6 +34,7 @@ export function UserMenu() {
         ...(user.role !== "student" ? [{ href: "/teach/dashboard", label: "Teacher dashboard", strong: true }] : []),
         ...(user.role === "admin" ? [{ href: "/admin", label: "Admin", strong: true }] : []),
         "divider",
+        ...(user.role !== "student" ? [{ href: "/teach/profile", label: "Teacher profile" }] : []),
         { href: "/account", label: "Account" },
         ...(user.role === "student" ? [{ href: "/teach", label: "Teach on Sanaa" }] : []),
         { href: "/help", label: "Help Centre" },

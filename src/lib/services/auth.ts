@@ -178,6 +178,7 @@ export async function deleteAccount(userId: string, password: string): Promise<R
       progress: omit(s.progress),
       wishlist: omit(s.wishlist),
       payoutAccounts: omit(s.payoutAccounts),
+      teacherProfiles: Object.fromEntries(Object.entries(s.teacherProfiles).filter(([k]) => k !== userId && k !== user.teacherId)),
     };
   });
   return ok(undefined);

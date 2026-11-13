@@ -36,6 +36,7 @@ export function courseJsonLd(course: Course, teacher: Teacher | undefined, revie
     url: absoluteUrl(`/courses/${course.slug}`),
     inLanguage: "en",
     educationalLevel: course.level,
+    ...(course.cover && { image: absoluteUrl(`${course.cover.src}-1080.webp`) }),
     provider: { "@type": "Organization", name: siteConfig.name, sameAs: siteConfig.url },
     ...(teacher && { instructor: { "@type": "Person", name: teacher.name, jobTitle: teacher.title } }),
     offers: {

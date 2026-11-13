@@ -28,7 +28,7 @@ export function SuccessView({ course }: { course: Course }) {
       <p className="mt-2 text-ui text-ink-soft">
         {enrollment.amount > 0 ? `Payment of ${formatPrice(enrollment.amount, enrollment.currency)} received.` : "This course is now in your library."} A receipt has been sent to your email.
       </p>
-      <div className="mx-auto mt-8 w-56"><CourseCover id={course.id} category={course.category} coverUrl={course.coverUrl} /></div>
+      <div className="mx-auto mt-8 w-56"><CourseCover id={course.id} category={course.category} cover={course.cover} /></div>
       <p className="mt-4 text-title font-semibold">{course.title}</p>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
         <Button href={`/learn/${course.slug}${first ? `?lesson=${first.id}` : ""}`} size="lg">Start learning</Button>

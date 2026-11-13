@@ -5,7 +5,7 @@ import { getAllCourses, getTeachers } from "@/lib/catalog/repository";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  const staticPages = ["/", "/courses", "/teach", "/teach/guide", "/about", "/help", "/terms", "/privacy"].map((p) => ({
+  const staticPages = ["/", "/courses", "/teach", "/teach/guide", "/about", "/help", "/terms", "/privacy", "/credits"].map((p) => ({
     url: absoluteUrl(p),
     lastModified: now,
     changeFrequency: "weekly" as const,

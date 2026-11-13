@@ -27,6 +27,20 @@ export type Section = {
   lessons: Lesson[];
 };
 
+/** A self-hosted photo, served at 480, 1080 and 1600 pixels wide. */
+export type CoverImage = {
+  src: string;
+  alt: string;
+  credit: PhotoCredit;
+};
+
+export type PhotoCredit = {
+  creator: string;
+  license: string;
+  licenseUrl: string;
+  sourceUrl: string;
+};
+
 export type CourseBadge = "bestseller" | "top-rated" | "new";
 
 export type Course = {
@@ -48,8 +62,8 @@ export type Course = {
   ratingCount: number;
   students: number;
   badge?: CourseBadge;
-  /** Optional real cover photo. Falls back to generated art. */
-  coverUrl?: string;
+  /** Real cover photo. Falls back to generated art when missing. */
+  cover?: CoverImage;
   updatedAt: string;
 };
 

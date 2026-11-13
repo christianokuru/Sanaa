@@ -1,4 +1,5 @@
 import type { Course, Section } from "@/lib/catalog/types";
+import { COVERS } from "@/lib/catalog/seed/covers";
 
 type LessonSpec = [title: string, minutes: number, preview?: boolean];
 type SectionSpec = [title: string, lessons: LessonSpec[]];
@@ -27,6 +28,7 @@ function course(spec: CourseSpec): Course {
     ...spec,
     language: spec.language ?? "English",
     updatedAt: spec.updatedAt ?? "2026-10-01T00:00:00.000Z",
+    cover: spec.cover ?? COVERS[spec.id],
     sections: buildSections(spec.id, spec.sections),
   };
 }

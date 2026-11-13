@@ -68,7 +68,7 @@ export default function CoursePage({ params }: Props) {
       <article className="pb-28 md:pb-0">
         {/* Phone: full-bleed cover with floating controls */}
         <div className="relative md:hidden">
-          <div className="aspect-[4/3]"><CourseCover id={course.id} category={course.category} coverUrl={course.coverUrl} rounded={false} fill /></div>
+          <div className="aspect-[4/3]"><CourseCover id={course.id} category={course.category} cover={course.cover} rounded={false} fill priority sizes="(min-width: 768px) 1px, 100vw" /></div>
           <CourseMobileTop courseId={course.id} title={course.title} path={path} />
         </div>
 
@@ -88,11 +88,21 @@ export default function CoursePage({ params }: Props) {
             </div>
           </header>
 
-          {/* Desktop: wide cover */}
-          <div className="mt-6 hidden h-[clamp(320px,34vw,460px)] overflow-hidden rounded-[20px] md:grid md:grid-cols-[2fr_1fr] md:grid-rows-2 md:gap-2">
-            <CourseCover id={course.id} category={course.category} coverUrl={course.coverUrl} rounded={false} fill className="row-span-2" />
-            <CourseCover id={`${course.id}-b`} category={course.category} rounded={false} fill />
-            <CourseCover id={`${course.id}-c`} category={course.category} rounded={false} fill />
+          {/* Desktop gallery: the photo plus two close-up details of it, or three art tiles */}
+          <div className="mt-6 hidden h-[clamp(320px,34vw,460px)] overflow-hidden rounded-[20px] md:grid md:grid-cols-[1.6fr_1fr] md:grid-rows-2 md:gap-2">
+            {course.cover ? (
+              <>
+                <CourseCover id={course.id} category={course.category} cover={course.cover} rounded={false} fill className="row-span-2 [&_img]:object-[50%_22%]" sizes="(min-width: 1280px) 780px, 62vw" />
+                <CourseCover id={course.id} category={course.category} cover={course.cover} rounded={false} fill decorative className="[&_img]:origin-[30%_30%] [&_img]:scale-[1.7]" sizes="(min-width: 1280px) 480px, 38vw" />
+                <CourseCover id={course.id} category={course.category} cover={course.cover} rounded={false} fill decorative className="[&_img]:origin-[70%_75%] [&_img]:scale-[1.7]" sizes="(min-width: 1280px) 480px, 38vw" />
+              </>
+            ) : (
+              <>
+                <CourseCover id={course.id} category={course.category} rounded={false} fill className="row-span-2" />
+                <CourseCover id={`${course.id}-b`} category={course.category} rounded={false} fill />
+                <CourseCover id={`${course.id}-c`} category={course.category} rounded={false} fill />
+              </>
+            )}
           </div>
 
           <div className="mt-8 grid gap-16 md:grid-cols-[1fr_360px] lg:gap-24">

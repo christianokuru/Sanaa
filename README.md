@@ -40,7 +40,8 @@ Remove the demo accounts (`DEMO_ACCOUNTS` in `src/lib/services/auth.ts`) before 
 ## Design
 
 - Clean white canvas, near-black type, one action color: **ember** `#D93A16`.
-- Bold course art inspired by Ndebele painting, kente, mud cloth and adire is generated per course (`src/components/brand/CourseArt.tsx`). It needs no image downloads. When a course has a real photo (`coverUrl`), the photo is shown instead.
+- **Photos:** every course has an openly licensed placeholder photo from Wikimedia Commons, credited on `/credits`. Data is in `src/lib/catalog/seed/covers.ts`; files are in `public/images/courses/`, made at 480, 1080 and 1600 px wide by `scripts/process-photos.py`. Replace them with each teacher's own photos before launch. Some show real, identifiable people, so get teachers' own photos (with consent) for production.
+- **Pattern art** inspired by Ndebele painting, kente, mud cloth and adire (`src/components/brand/CourseArt.tsx`) is the fallback for any course without a photo, such as a teacher's new course.
 - Fonts: DM Sans, with Instrument Serif italic for accents.
 - Tokens live in `tailwind.config.ts`.
 
@@ -92,3 +93,4 @@ Components never change data directly: they call `lib/services/*`. Connecting th
 - `npm run lint`: lint
 - `npm run typecheck`: type check
 - `npm run icons`: regenerate PWA icons from `public/icons/icon.svg` (needs Playwright)
+- `python3 scripts/process-photos.py <folder>`: turn `<course-id>.jpg` source photos into web-ready WebP files (needs Pillow)

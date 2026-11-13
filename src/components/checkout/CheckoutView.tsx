@@ -80,7 +80,7 @@ export function CheckoutView({ course, teacherName, lessonCount }: Props) {
   const summary = (
     <div className="rounded-2xl border border-line p-6">
       <div className="flex gap-4">
-        <div className="w-28 shrink-0"><CourseCover id={course.id} category={course.category} coverUrl={course.coverUrl} /></div>
+        <div className="w-28 shrink-0"><CourseCover id={course.id} category={course.category} cover={course.cover} /></div>
         <div className="min-w-0">
           <p className="text-ui font-semibold leading-snug">{course.title}</p>
           <p className="mt-1 text-body text-ink-soft">{teacherName}</p>

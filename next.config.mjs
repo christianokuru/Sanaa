@@ -17,6 +17,11 @@ const nextConfig = {
         ],
       },
       {
+        // Photos rarely change: cache for a week, refresh quietly in the background.
+        source: "/images/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" }],
+      },
+      {
         source: "/sw.js",
         headers: [
           { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },

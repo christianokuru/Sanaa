@@ -16,7 +16,7 @@ export function LearningCard({ course, enrollment }: { course: Course; enrollmen
   return (
     <article className="group">
       <Link href={href} className="relative block">
-        <CourseCover id={course.id} category={course.category} coverUrl={course.coverUrl} />
+        <CourseCover id={course.id} category={course.category} cover={course.cover} />
         <span className="absolute inset-0 flex items-center justify-center rounded-card bg-black/0 transition group-hover:bg-black/20">
           <PlayCircle className="h-14 w-14 text-white opacity-0 drop-shadow transition group-hover:opacity-100" strokeWidth={1.2} />
         </span>

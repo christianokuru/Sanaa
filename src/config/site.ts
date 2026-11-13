@@ -1,3 +1,6 @@
+/** Courses shown in the home page hero, picked by hand for strong photos from different crafts. */
+export const HERO_COURSE_IDS = ["c-gele", "c-djembe", "c-ankara-dress"] as const;
+
 export const siteConfig = {
   name: "Sanaa",
   tagline: "Learn the craft. Earn from it.",

@@ -1,5 +1,5 @@
 /* Sanaa service worker: fast repeat visits and an offline fallback. */
-const VERSION = "sanaa-v1";
+const VERSION = "sanaa-v2";
 const STATIC_CACHE = `${VERSION}-static`;
 const PAGE_CACHE = `${VERSION}-pages`;
 const OFFLINE_URL = "/offline";
@@ -25,8 +25,8 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Built assets never change for a given URL: cache first.
-  if (url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/icons/")) {
+  // Built assets and photos never change for a given URL: cache first.
+  if (url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/icons/") || url.pathname.startsWith("/images/")) {
     event.respondWith(
       caches.match(request).then(
         (hit) =>

@@ -17,7 +17,7 @@ export function CourseCard({ course, teacher }: { course: Course; teacher?: Teac
   return (
     <article className="group relative">
       <Link href={`/courses/${course.slug}`} className="block rounded-card focus-visible:ring-offset-4" prefetch={false}>
-        <CourseCover id={course.id} category={course.category} coverUrl={course.coverUrl} badge={course.badge} />
+        <CourseCover id={course.id} category={course.category} cover={course.cover} badge={course.badge} />
         <div className="mt-3 flex items-start justify-between gap-2">
           <h3 className="line-clamp-2 text-ui font-semibold leading-snug text-ink">{course.title}</h3>
           {course.ratingCount > 0 && <Rating value={course.rating} className="mt-0.5 shrink-0" />}

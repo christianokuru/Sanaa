@@ -1,4 +1,5 @@
 import { CATEGORIES } from "@/config/categories";
+import { HERO_COURSE_IDS } from "@/config/site";
 import { Container } from "@/components/ui/Container";
 import { CategoryBar } from "@/components/layout/CategoryBar";
 import { CourseRow } from "@/components/course/CourseRow";
@@ -9,13 +10,14 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Scroller } from "@/components/ui/Scroller";
 import { TeacherCard } from "@/components/teacher/TeacherCard";
 import {
-  getAllCourses, getCoursesByCategory, getCoursesByTeacher, getFreeCourses, getNewCourses, getPopularCourses, getTeachers,
+  getAllCourses, getCourseById, getCoursesByCategory, getCoursesByTeacher, getFreeCourses, getNewCourses, getPopularCourses, getTeachers,
 } from "@/lib/catalog/repository";
 
 export default function HomePage() {
   const popular = getPopularCourses(10);
   const teachers = getTeachers();
   const students = getAllCourses().reduce((s, c) => s + c.students, 0);
+  const featured = HERO_COURSE_IDS.map((id) => getCourseById(id)).filter((c) => c !== undefined);
 
   return (
     <>
@@ -26,7 +28,7 @@ export default function HomePage() {
         <CategoryBar active="all" />
       </Container>
 
-      <HomeHero featured={popular.slice(0, 3)} teacherCount={teachers.length} studentCount={students} />
+      <HomeHero featured={featured} teacherCount={teachers.length} studentCount={students} />
 
       <Container className="mt-20 space-y-14 md:mt-24 md:space-y-16">
         <CourseRow title="Popular right now" subtitle="What learners across Africa are taking this week" href="/courses?sort=popular" courses={popular} />

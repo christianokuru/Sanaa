@@ -102,7 +102,7 @@ export function DashboardView() {
           {stats.courses.map((c) => (
             <li key={c.id}>
               <Link href={`/courses/${c.slug}`} className="flex gap-4 rounded-card border border-line p-3 transition hover:border-ink">
-                <div className="w-24 shrink-0"><CourseCover id={c.id} category={c.category} coverUrl={c.coverUrl} /></div>
+                <div className="w-24 shrink-0"><CourseCover id={c.id} category={c.category} cover={c.cover} /></div>
                 <div className="min-w-0 flex-1 py-1">
                   <Badge tone="malachite">Live</Badge>
                   <p className="mt-2 truncate text-ui font-semibold">{c.title}</p>

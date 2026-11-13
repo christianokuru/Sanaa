@@ -21,6 +21,7 @@ const COLUMNS = [
       { href: "/help", label: "Help Centre" },
       { href: "/terms", label: "Terms" },
       { href: "/privacy", label: "Privacy" },
+      { href: "/credits", label: "Photo credits" },
     ],
   },
 ];

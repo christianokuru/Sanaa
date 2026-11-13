@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { ArrowRight, Star } from "lucide-react";
-import { CourseArt } from "@/components/brand/CourseArt";
+import { CourseCover } from "@/components/course/CourseCover";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { getCategory } from "@/config/categories";
 import type { Course } from "@/lib/catalog/types";
 import { formatCompact } from "@/lib/utils/format";
 
-/** Clean, confident hero: big type on white, a vivid mosaic of course art beside it. */
+/** Clean, confident hero: big type on white, a mosaic of craft photos beside it. */
 export function HomeHero({ featured, teacherCount, studentCount }: { featured: Course[]; teacherCount: number; studentCount: number }) {
   const [lead, ...rest] = featured;
   return (
@@ -41,11 +40,11 @@ export function HomeHero({ featured, teacherCount, studentCount }: { featured: C
           <div className="relative">
             <div className="grid grid-cols-3 grid-rows-2 gap-3 md:gap-4">
               <Link href={`/courses/${lead.slug}`} prefetch={false} className="col-span-2 row-span-2 overflow-hidden rounded-[24px]" aria-label={lead.title}>
-                <CourseArt seed={lead.id} palette={getCategory(lead.category)!.palette} variant={1} />
+                <CourseCover id={lead.id} category={lead.category} cover={lead.cover} rounded={false} fill priority sizes="(min-width: 1024px) 30vw, 66vw" />
               </Link>
-              {rest.slice(0, 2).map((c, i) => (
+              {rest.slice(0, 2).map((c) => (
                 <Link key={c.id} href={`/courses/${c.slug}`} prefetch={false} className="aspect-square overflow-hidden rounded-[20px]" aria-label={c.title}>
-                  <CourseArt seed={c.id} palette={getCategory(c.category)!.palette} variant={i === 0 ? 0 : 5} />
+                  <CourseCover id={c.id} category={c.category} cover={c.cover} rounded={false} fill sizes="(min-width: 1024px) 15vw, 33vw" />
                 </Link>
               ))}
             </div>
@@ -55,7 +54,7 @@ export function HomeHero({ featured, teacherCount, studentCount }: { featured: C
               className="absolute -bottom-5 left-4 right-4 flex items-center gap-3 rounded-2xl bg-white p-3 pr-4 shadow-float ring-1 ring-black/5 transition hover:-translate-y-0.5 sm:right-auto sm:max-w-sm"
             >
               <span className="h-12 w-12 shrink-0 overflow-hidden rounded-xl">
-                <CourseArt seed={lead.id} palette={getCategory(lead.category)!.palette} variant={1} />
+                <CourseCover id={lead.id} category={lead.category} cover={lead.cover} rounded={false} fill sizes="48px" />
               </span>
               <span className="min-w-0">
                 <span className="block truncate text-body font-semibold">{lead.title}</span>
